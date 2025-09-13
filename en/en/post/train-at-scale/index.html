@@ -1,127 +1,483 @@
-<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><title>Entrenamiento a Gran Escala: FSDP, QLoRA, y más. | Juan Lebrero</title><meta name=author content="Juan Francisco Lebrero"><meta name=description content="Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad …"><meta name=keywords content="LoRA,QLoRA,LLMs,finetuning,cuantización,4-bit,deepspeed,fsdp,zero,precisión,JAX,bfloat16,fp16"><link rel=canonical href=https://juanlebrero.com/en/en/post/train-at-scale/><link rel=icon type=image/png href=https://juanlebrero.com/favicon.png sizes=96x96><link rel="shortcut icon" href=https://juanlebrero.com/favicon.ico><meta name=apple-mobile-web-app-title content="Juan Lebrero"><meta name=twitter:card content="summary"><meta name=twitter:title content="Entrenamiento a Gran Escala: FSDP, QLoRA, y más. | Juan Lebrero"><meta name=twitter:description content="Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad …"><meta property="og:title" content="Entrenamiento a Gran Escala: FSDP, QLoRA, y más. | Juan Lebrero"><meta property="og:description" content="Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad …"><meta property="og:type" content="article"><meta property="og:url" content="https://juanlebrero.com/en/en/post/train-at-scale/"><meta property="og:site_name" content="Juan Lebrero"><script src=https://juanlebrero.com/js/hugo-brewm.min.js integrity=sha384-pkABb0TPkeq3AxiS2BULdCUQqMVNS3HGboZzLWD2EyW7KgEqYzZ01hTM+nogR1Um crossorigin=anonymous defer></script><link rel=stylesheet href=https://juanlebrero.com/css/hugo-brewm.min.css integrity="sha256-nNtC2ii8N7/XShOJPjDaW9FjViaa8FIjc3uHT8bu3D8=" crossorigin=anonymous><link rel=stylesheet href=https://juanlebrero.com/css/override.css><style>body{max-width:786px;margin:auto;padding:2rem}img{max-width:86vw}</style></head><body id=post><header class=pagewidth><div id=background-header class=background aria-hidden=true><div class=grain hidden></div></div><nav aria-label=Bypass><a id=to-content href=#content aria-label="Skip to Main Content"><span>Skip to Main Content</span>
-<kbd class=key aria-hidden=true>c</kbd>
-<span class=screening aria-hidden=true></span></a></nav><details class=presentation id=top-nav><summary class=on-deck><span class="t t2">Navigation</span>
-<span class=menu-icon role=presentation></span></summary><nav tabindex=-1 aria-label=Top></nav><div id=top-nav-screen class="screening js-cpn" role=presentation aria-hidden=true></div></details></header><main id=page><header class=pagewidth><menu class=srm><a id=print-button class=hide href=javascript:window.print() role=button aria-label=Print><span class="t srt" role=tooltip>Print</span>
-</a><a id=navigatorShare href=#share role=button aria-label=Share><span class="t srt" role=tooltip>Share</span>
-</a><a id=copyPermalink class=hide href=javascript:navigator.clipboard.writeText(window.location.href) role=button aria-label="Copy URL"><span id=copy class="t srt" role=tooltip>Copy URL</span>
-<span id=isCopying style=display:none>Copying...</span>
-<span id=copyText style=display:none>Copy URL</span></a></menu><button id=back class=hide type=button onclick=history.back() aria-label="Go Back">
-<span class="t srt" role=tooltip>Go Back</span></button><details class=presentation aria-expanded=true id=has-breadcrumb open><summary id=breadcrumb tabindex=-1><span>Breadcrumb</span></summary><nav aria-labelledby=breadcrumb><ul role=presentation class=breadcrumb><li><a href=https://juanlebrero.com/en/en/ aria-current=true>Juan Lebrero</a></li><li><a href=https://juanlebrero.com/en/en/post/ aria-current=true>Posts</a></li><li><a href aria-current=page tabindex=-1>Entrenamiento a Gran Escala: FSDP, QLoRA, y más.</a></li></ul></nav></details></header><div id=top role=presentation></div><article id=main-article class="pagewidth rm" role=document aria-labelledby=title data-pagefind-body><header aria-labelledby=title><h1 id=title data-pagefind-meta=title data-bionread-safe>Entrenamiento a Gran Escala: FSDP, QLoRA, y más.</h1><div id=doc-author class="textsw author"><a href=https://juanlebrero.com/en/author/juan-francisco-lebrero/>Juan Francisco Lebrero</a></div><div class=date-has-label><time class=doc-publish-date datetime=2025-01-27T00:00:00+00:00 data-time-label="Published on">January 27, 2025</time><time class=doc-lastmod-date datetime=2025-09-13T17:10:03-03:00 data-time-label="Modified on">September 13, 2025</time></div></header><section aria-labelledby=title id=content data-bionread-safe><p>Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad del entrenamiento. Por eso, en esta guía, vamos a ver conceptos como precisión numérica, paralelización de datos, cuantización, LoRA, y más.</p><h2 id=precisión-numérica>Precisión numérica</h2><p>La elección del formato numérico (FP32, FP16, BF16, FP8, INT8, etc.) constituye uno de los factores más determinantes para el rendimiento, el uso de memoria y la estabilidad del entrenamiento de modelos de gran escala. Por eso, es importante entender como funciona la precisión numérica y como afecta al rendimiento de los modelos, lo que se explicará en esta sección.</p><h3 id=por-qué-importa-la-precisión>¿Por qué Importa la Precisión?</h3><p>Primero, necesitamos entender que intentan hacer los formatos de punto flotante. Principalmente, intentan representar un valor real de manera aproximada, y lo hacen con dos componentes clave: la <em>mantisa</em> y el <em>exponente</em>.</p><p>Un número en punto flotante representa aproximadamente un valor real mediante la fórmula:</p><p>$$\text{valor} \approx \text{signo} \times \text{mantisa} \times \text{base}^{\text{exponente}}$$</p><p>donde:</p><ul><li><strong>Mantisa</strong>: Controla la resolución fina (cuántos pasos discretos entra en el intervalo 1.0 - 2.0)</li><li><strong>Exponente</strong>: Determina el rango dinámico (qué tan grandes o pequeños pueden ser los números representables)</li><li><strong>Base</strong>: En IEEE 754 es 2.</li></ul><p>Más bits para la mantisa $\rightarrow$ mayor precisión; más bits para el exponente $\rightarrow$ mayor rango</p><figure><img src=images/layout.png alt="Representación de Punto Flotante de 32 bits (FP32)" style=width:100%;height:auto><figcaption style=text-align:center;font-size:.95em;color:#666>Esquema de la representación de un número en punto flotante de 32 bits (FP32) según el estándar IEEE 754.<br></figcaption></figure><p>Pero, ¿por qué es importante?</p><p>Bueno, hay tres razones principales por las que la precisión numérica es crucial en el entrenamiento de modelos de gran escala.</p><ul><li><p><strong>Eficiencia computacional</strong>: Los formatos de menor ancho de bits aceleran el cómputo en Tensor Cores/TPUs y reducen significativamente el uso de memoria.</p></li><li><p><strong>Estabilidad numérica</strong>: El rango dinámico y la granularidad de representación afectan directamente el underflow/overflow y el ruido numérico durante el entrenamiento.</p></li><li><p><strong>Escabilidad</strong>: Entrenar LLMs a gran escala requiere aprovechar la precisión mixta para que el costo computacional sea viable económicamente.</p></li></ul><h2 id=formatos-de-precisión-numérica>Formatos de precisión numérica</h2><p>Los formatos de punto flotante son muy variados, pero los más comunes son:</p><figure><img src=images/floating_point.png alt="Comparativa de formatos de punto flotante: BF16, FP32 y FP16"><figcaption style=text-align:center;font-size:.95em;color:#666>Comparación visual de los formatos de punto flotante más utilizados en deep learning: <b>BF16</b>, <b>FP32</b> y <b>FP16</b>.<br></figcaption></figure><h3 id=fp32-ieee-754-precisión-simple>FP32 (IEEE 754, precisión simple)</h3><p>Este es el punto de referencia para casi todo. Usa 1 bit de signo, 8 de exponente y 23 de mantisa. Su épsilon es $\varepsilon \approx 2^{-23} \approx 1.19\times10^{-7}$ y cubre un rango amplio, desde $1.18\times10^{-38}$ hasta $3.4\times10^{38}$.</p><p>En práctica de ML lo tomamos como “precisión plena”. Incluso cuando trabajamos con precisión mixta, los acumuladores de gradientes se mantienen en FP32 para que el entrenamiento no se desestabilice.</p><h3 id=fp16-ieee-754-half>FP16 (IEEE 754, half)</h3><p>Acá buscamos velocidad y ahorro de memoria. FP16 tiene 1 bit de signo, 5 de exponente y 10 de mantisa, con $\varepsilon \approx 2^{-10} \approx 9.77\times10^{-4}$ y rango aproximado de $6.1\times10^{-5}$ a $6.55\times10^{4}$. Suele acelerar tanto el entrenamiento como la inferencia, aunque conviene usar <a href=https://picdictionary.com/ml-dictionary/loss-scaling-in-ai-and-deep-learning target=_blank rel=noopener>loss scaling</a> para que los gradientes chicos no desaparezcan.</p><p>Además, ofrece mejor resolución fraccional que BF16, pero el rango dinámico es más corto, así que se puede llegar a saturar con activaciones o gradientes grandes y “apagar” señales muy chiquititas.</p><h3 id=bf16-brain-floating-point>BF16 (Brain Floating Point)</h3><p>El favorito actual para entrenar modelos grandes en TPUs y GPUs, como una H100. Tiene 1 bit de signo, 8 de exponente y 7 de mantisa, con $\varepsilon \approx 2^{-7} \approx 7.81\times10^{-3}$. Lo clave es que comparte el mismo rango que FP32, de $1.18\times10^{-38}$ a $3.4\times10^{38}$. En la práctica suele funcionar sin <em>loss scaling</em>. Mantiene el rango amplio que evita overflows y underflows molestos, y aunque la resolución fraccional sea menor que en FP16, para LLMs entrenando en serio suele alcanzar sin dramas.</p><h2 id=comparación-de-precisiones>Comparación de precisiones</h2><p>Para comparar las precisiones, voy a usar JAX, que es un framework de ML hecho por Google, que permite realizar operaciones de manera eficiente en GPUs y TPUs. La razón de utilizar JAX y no PyTorch, por ejemplo, es que JAX nos permitirá más adelante ver en &ldquo;crudo&rdquo; la paralelización de las operaciones y la optimización de la memoria.</p><p>Primero, importamos JAX y vemos la versión y el backend, así como los dispositivos disponibles:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>jax</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Configuración de JAX</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;JAX version: </span><span class=si>{</span><span class=n>jax</span><span class=o>.</span><span class=n>__version__</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;JAX backend: </span><span class=si>{</span><span class=n>jax</span><span class=o>.</span><span class=n>default_backend</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Available devices: </span><span class=si>{</span><span class=n>jax</span><span class=o>.</span><span class=n>devices</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
-</span></span></code></pre></div><p>Para medir el rendimiento y la memoria, necesitamos funciones para obtener el uso de memoria y medir el tiempo de ejecución. Para esto, vamos a usar <code>psutil</code>, <code>tracemalloc</code> y <code>time</code>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>jax.numpy</span> <span class=k>as</span> <span class=nn>jnp</span>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>psutil</span>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>tracemalloc</span>
-</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_memory_usage</span><span class=p>():</span>
-</span></span><span class=line><span class=cl>   <span class=s2>&#34;&#34;&#34;Obtiene el uso actual de memoria en MB&#34;&#34;&#34;</span>
-</span></span><span class=line><span class=cl>   <span class=n>process</span> <span class=o>=</span> <span class=n>psutil</span><span class=o>.</span><span class=n>Process</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=n>process</span><span class=o>.</span><span class=n>memory_info</span><span class=p>()</span><span class=o>.</span><span class=n>rss</span> <span class=o>/</span> <span class=mi>1024</span> <span class=o>/</span> <span class=mi>1024</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>measure_memory_and_time</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>   <span class=k>def</span> <span class=nf>wrapper</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>       <span class=n>tracemalloc</span><span class=o>.</span><span class=n>start</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>       <span class=n>start_memory</span> <span class=o>=</span> <span class=n>get_memory_usage</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>      
-</span></span><span class=line><span class=cl>       <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>       <span class=n>result</span> <span class=o>=</span> <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>jax</span><span class=o>.</span><span class=n>block_until_ready</span><span class=p>(</span><span class=n>result</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>end_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>      
-</span></span><span class=line><span class=cl>       <span class=n>end_memory</span> <span class=o>=</span> <span class=n>get_memory_usage</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>       <span class=n>current</span><span class=p>,</span> <span class=n>peak</span> <span class=o>=</span> <span class=n>tracemalloc</span><span class=o>.</span><span class=n>get_traced_memory</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>       <span class=n>tracemalloc</span><span class=o>.</span><span class=n>stop</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>      
-</span></span><span class=line><span class=cl>       <span class=k>return</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>           <span class=s1>&#39;result&#39;</span><span class=p>:</span> <span class=n>result</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>           <span class=s1>&#39;execution_time&#39;</span><span class=p>:</span> <span class=n>end_time</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>           <span class=s1>&#39;memory_delta&#39;</span><span class=p>:</span> <span class=n>end_memory</span> <span class=o>-</span> <span class=n>start_memory</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>           <span class=s1>&#39;peak_memory&#39;</span><span class=p>:</span> <span class=n>peak</span> <span class=o>/</span> <span class=mi>1024</span> <span class=o>/</span> <span class=mi>1024</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>           <span class=s1>&#39;current_memory&#39;</span><span class=p>:</span> <span class=n>current</span> <span class=o>/</span> <span class=mi>1024</span> <span class=o>/</span> <span class=mi>1024</span>
-</span></span><span class=line><span class=cl>       <span class=p>}</span>
-</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=n>wrapper</span>
-</span></span></code></pre></div><p>Ahora, vamos a medir el rendimiento y la memoria de la multiplicación de matrices y la red neuronal. Para esto, vamos a usar la función <code>measure_memory_and_time</code> que definimos anteriormente.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nd>@measure_memory_and_time</span>
-</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>matrix_multiplication_test</span><span class=p>(</span><span class=n>dtype</span><span class=p>,</span> <span class=n>shape</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>   <span class=s2>&#34;&#34;&#34;Prueba de multiplicación de matrices con precisión dada&#34;&#34;&#34;</span>
-</span></span><span class=line><span class=cl>   <span class=n>key</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>PRNGKey</span><span class=p>(</span><span class=mi>42</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>   <span class=n>key1</span><span class=p>,</span> <span class=n>key2</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=n>key</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>  
-</span></span><span class=line><span class=cl>   <span class=k>def</span> <span class=nf>matmul_operation</span><span class=p>():</span>
-</span></span><span class=line><span class=cl>       <span class=n>a</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>key1</span><span class=p>,</span> <span class=n>shape</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>b</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>key2</span><span class=p>,</span> <span class=n>shape</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=k>return</span> <span class=n>jnp</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>  
-</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=n>matmul_operation</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=nd>@measure_memory_and_time</span>
-</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>neural_network_forward_pass_test</span><span class=p>(</span><span class=n>dtype</span><span class=p>,</span> <span class=n>input_size</span><span class=p>,</span> <span class=n>hidden_size</span><span class=p>,</span> <span class=n>output_size</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>   <span class=s2>&#34;&#34;&#34;Prueba de pase forward de red neuronal simple&#34;&#34;&#34;</span>
-</span></span><span class=line><span class=cl>   <span class=n>key</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>PRNGKey</span><span class=p>(</span><span class=mi>123</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>   <span class=n>keys</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>  
-</span></span><span class=line><span class=cl>   <span class=k>def</span> <span class=nf>nn_forward</span><span class=p>():</span>
-</span></span><span class=line><span class=cl>       <span class=c1># Inicialización de pesos</span>
-</span></span><span class=line><span class=cl>       <span class=n>W1</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>keys</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=p>(</span><span class=n>input_size</span><span class=p>,</span> <span class=n>hidden_size</span><span class=p>),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>b1</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>keys</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=p>(</span><span class=n>hidden_size</span><span class=p>,),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>W2</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>keys</span><span class=p>[</span><span class=mi>2</span><span class=p>],</span> <span class=p>(</span><span class=n>hidden_size</span><span class=p>,</span> <span class=n>output_size</span><span class=p>),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>b2</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>keys</span><span class=p>[</span><span class=mi>2</span><span class=p>],</span> <span class=p>(</span><span class=n>output_size</span><span class=p>,),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>      
-</span></span><span class=line><span class=cl>       <span class=c1># Datos de entrada</span>
-</span></span><span class=line><span class=cl>       <span class=n>x</span> <span class=o>=</span> <span class=n>jax</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>keys</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=p>(</span><span class=n>input_size</span><span class=p>,),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>dtype</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>      
-</span></span><span class=line><span class=cl>       <span class=c1># Pase forward</span>
-</span></span><span class=line><span class=cl>       <span class=n>h</span> <span class=o>=</span> <span class=n>jnp</span><span class=o>.</span><span class=n>tanh</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>W1</span><span class=p>)</span> <span class=o>+</span> <span class=n>b1</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>       <span class=n>y</span> <span class=o>=</span> <span class=n>jnp</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>h</span><span class=p>,</span> <span class=n>W2</span><span class=p>)</span> <span class=o>+</span> <span class=n>b2</span>
-</span></span><span class=line><span class=cl>      
-</span></span><span class=line><span class=cl>       <span class=k>return</span> <span class=n>y</span>
-</span></span><span class=line><span class=cl>  
-</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=n>nn_forward</span><span class=p>()</span>
-</span></span></code></pre></div><p>Para correr las pruebas, simplemente llamamos a las funciones <code>matrix_multiplication_test</code> y <code>neural_network_forward_pass_test</code> con los tipos de precisión y las dimensiones de las matrices y la red neuronal, por ejemplo:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>matrix_multiplication_test</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>float16</span><span class=p>,</span> <span class=p>(</span><span class=mi>5000</span><span class=p>,</span> <span class=mi>5000</span><span class=p>))</span>
-</span></span><span class=line><span class=cl><span class=n>neural_network_forward_pass_test</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>float16</span><span class=p>,</span> <span class=mi>784</span><span class=p>,</span> <span class=mi>256</span><span class=p>,</span> <span class=mi>10</span><span class=p>)</span>
-</span></span></code></pre></div><p>Corriendo las pruebas en un M1, obtenemos los siguientes resultados para la multiplicación de matrices:</p><table><thead><tr><th>Precisión</th><th>Tiempo (s)</th><th>Memoria Delta (MB)</th><th>Memoria Pico (MB)</th></tr></thead><tbody><tr><td>FP16</td><td>1.024</td><td>448.61</td><td>0.013</td></tr><tr><td>BF16</td><td>0.978</td><td>49.33</td><td>0.008</td></tr><tr><td>FP32</td><td>0.943</td><td>-49.25</td><td>0.008</td></tr><tr><td>FP64</td><td>0.928</td><td>7.84</td><td>0.009</td></tr></tbody></table><p>Y para la red neuronal:</p><table><thead><tr><th>Precisión</th><th>Tiempo (s)</th><th>Memoria Delta (MB)</th><th>Memoria Pico (MB)</th></tr></thead><tbody><tr><td>FP16</td><td>0.007</td><td>11.59</td><td>0.020</td></tr><tr><td>BF16</td><td>0.004</td><td>4.81</td><td>0.015</td></tr><tr><td>FP32</td><td>0.003</td><td>7.16</td><td>0.015</td></tr><tr><td>FP64</td><td>0.002</td><td>0.14</td><td>0.016</td></tr></tbody></table><p><strong>NOTA</strong>: NOTAR QUE FP64 ES EL MÁS RÁPIDO, EXTRAÑAMENTE. ESTOS RESULTADOS SON PARA UN CPU. CABE DESTACAR QUE JAX ESTÁ OPTIMIZADO PARA GPUs, ADEMÁS DE QUE:</p><ol><li><strong>En CPUs modernos</strong> (como el M1), las operaciones FP64 pueden ser más eficientes debido a optimizaciones específicas del hardware y la arquitectura ARM.</li><li><strong>En GPUs</strong>, el rendimiento se invierte dramáticamente: FP16/BF16 son significativamente más rápidos que FP32/FP64 debido a:</li></ol><ul><li>Unidades de procesamiento especializadas (Tensor Cores en NVIDIA)</li><li>Mayor paralelización de operaciones de menor precisión</li><li>Menor uso de memoria y ancho de banda</li></ul><ol start=3><li><strong>JAX utiliza XLA</strong> (Accelerated Linear Algebra) que optimiza automáticamente el código para el hardware disponible, lo que puede explicar estas diferencias de rendimiento.</li><li><strong>Para entrenamiento real</strong>, se recomienda usar FP16/BF16 en GPUs para obtener el mejor rendimiento y eficiencia de memoria.</li></ol><h2 id=precisión-mixta-y-optimizaciones>Precisión Mixta y Optimizaciones</h2><h3 id=implementación-de-precisión-mixta>Implementación de Precisión Mixta</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=c1># Ejemplo de entrenamiento con precisión mixta</span>
-</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>mixed_precision_forward_pass</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>W</span><span class=p>,</span> <span class=n>b</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>   <span class=c1># Convertir a FP32 para cómputo</span>
-</span></span><span class=line><span class=cl>   <span class=n>x_fp32</span> <span class=o>=</span> <span class=n>x</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>   <span class=n>W_fp32</span> <span class=o>=</span> <span class=n>W</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>   <span class=n>b_fp32</span> <span class=o>=</span> <span class=n>b</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>  
-</span></span><span class=line><span class=cl>   <span class=c1># Pase forward</span>
-</span></span><span class=line><span class=cl>   <span class=n>y</span> <span class=o>=</span> <span class=n>jnp</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>x_fp32</span><span class=p>,</span> <span class=n>W_fp32</span><span class=p>)</span> <span class=o>+</span> <span class=n>b_fp32</span>
-</span></span><span class=line><span class=cl>  
-</span></span><span class=line><span class=cl>   <span class=c1># Convertir de vuelta a FP16 para eficiencia de memoria</span>
-</span></span><span class=line><span class=cl>   <span class=k>return</span> <span class=n>y</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=n>jnp</span><span class=o>.</span><span class=n>float16</span><span class=p>)</span>
-</span></span></code></pre></div></section><footer><nav id=keywords aria-label=Tags><span>Tags:&nbsp;</span><ul class=delimiter role=presentation><li><a href=https://juanlebrero.com/en/tags/lora/>LoRA</a></li><li><a href=https://juanlebrero.com/en/tags/qlora/>QLoRA</a></li><li><a href=https://juanlebrero.com/en/tags/llms/>LLMs</a></li><li><a href=https://juanlebrero.com/en/tags/finetuning/>Finetuning</a></li><li><a href=https://juanlebrero.com/en/tags/cuantizaci%C3%B3n/>Cuantización</a></li><li><a href=https://juanlebrero.com/en/tags/4-bit/>4-Bit</a></li><li><a href=https://juanlebrero.com/en/tags/deepspeed/>Deepspeed</a></li><li><a href=https://juanlebrero.com/en/tags/fsdp/>Fsdp</a></li><li><a href=https://juanlebrero.com/en/tags/zero/>Zero</a></li><li><a href=https://juanlebrero.com/en/tags/precisi%C3%B3n/>Precisión</a></li><li><a href=https://juanlebrero.com/en/tags/jax/>JAX</a></li><li><a href=https://juanlebrero.com/en/tags/bfloat16/>Bfloat16</a></li><li><a href=https://juanlebrero.com/en/tags/fp16/>Fp16</a></li></ul></nav></footer></article><hr class=hide style="margin:1in 0"><div id=contentinfo class=pagewidth role=contentinfo data-pagefind-ignore=all><div id=colophon style=display:none aria-live=polite><strong class=section-title>Colophon</strong><div><div id=qr role=img aria-label="QR code"></div><div class=verbose><div class=has-aria-label-top aria-label="Entrenamiento a Gran Escala: FSDP, QLoRA, y más."><span>https://juanlebrero.com/en/en/post/train-at-scale/</span></div><div><span>This page is built on: </span><time datetime=2025-09-13T17:22:06-03:00>2025-09-13 17:22</time></div><div><span>This page is accessed on: </span><time id=time-stamp></time></div><div><span>Powered by </span><a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> <a href=https://github.com/gohugoio/hugo/releases/tag/v0.150.0 aria-label="Hugo 0.150.0" target=_blank rel=noopener>v0.150.0</a> & <a href=https://github.com/foxihd/hugo-brewm target=_blank rel=noopener>hugo-brewm</a>.</div></div></div></div><div id=has-timeline><strong class=section-title>Redaction History</strong><ol aria-label="Redaction History"><li><time datetime=2025-01-27T00:00:00+00:00>January 27, 2025</time>
-<span>(Published)</span></li><li><time datetime=2025-09-13T17:10:03-03:00>September 13, 2025</time>
-<span>(Modified)</span></li></ol><p>Some information might changes over time, we keep redaction up to date.</p></div><details class=presentation aria-expanded=true id=has-share open><summary id=share tabindex=-1><span>Share</span></summary><nav aria-labelledby=share><ul role=presentation class="share srm"><li id=has-mastodon><form class=form id=mastodon action=//sharetomastodon.github.io/ target=_blank rel="noopener noreferrer"><input id=mastodonTitle type=hidden name=title value="Entrenamiento a Gran Escala: FSDP, QLoRA, y más.">
-<input id=mastodonPermalink type=hidden name=url value=https://juanlebrero.com/en/en/post/train-at-scale/>
-<input id=mastodonText type=hidden name=text value="Entrenamiento a Gran Escala: FSDP, QLoRA, y más. https://juanlebrero.com/en/en/post/train-at-scale/" disabled>
-<input id=mastodonInstance type=url class="ldots form__input" placeholder="Enter Mastodon instance (https://www.example.com)" aria-label="Mastodon instance URL">
-<button class=form__button type=submit aria-label="Share on Mastodon">
-<i class="icon mastodon sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Mastodon</span></button></form></li><li><a href="mailto:?subject=Entrenamiento%20a%20Gran%20Escala%3a%20FSDP%2c%20QLoRA%2c%20y%20m%c3%a1s.&body=https%3a%2f%2fjuanlebrero.com%2fen%2fen%2fpost%2ftrain-at-scale%2f" role=button aria-label="Share on Email"><i class="email sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Email</span></a></li><li><a href="whatsapp://send?text=Entrenamiento%20a%20Gran%20Escala%3a%20FSDP%2c%20QLoRA%2c%20y%20m%c3%a1s.%20https%3a%2f%2fjuanlebrero.com%2fen%2fen%2fpost%2ftrain-at-scale%2f" role=button aria-label="Share on Whatsapp"><i class="whatsapp sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Whatsapp</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://telegram.me/share/url?text=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;url=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Telegram in new tab"><i class="telegram sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Telegram</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://bsky.app/intent/compose?text=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;url=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Bluesky in new tab"><i class="bluesky sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Bluesky</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://facebook.com/sharer/sharer.php?u=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Facebook in new tab"><i class="facebook sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Facebook</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://news.ycombinator.com/submitlink?u=https://juanlebrero.com/en/en/post/train-at-scale/&amp;t=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s." role=button aria-label="Share on Hackernews in new tab"><i class="hackernews sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Hackernews</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://juanlebrero.com/en/en/post/train-at-scale/&amp;title=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;summary=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;source=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Linkedin in new tab"><i class="linkedin sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Linkedin</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://pinterest.com/pin/create/button/?url=https://juanlebrero.com/en/en/post/train-at-scale/&amp;media=https://juanlebrero.com/en/en/post/train-at-scale/&amp;description=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s." role=button aria-label="Share on Pinterest in new tab"><i class="pinterest sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Pinterest</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://reddit.com/submit/?url=https://juanlebrero.com/en/en/post/train-at-scale/&amp;resubmit=true&amp;title=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s." role=button aria-label="Share on Reddit in new tab"><i class="reddit sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Reddit</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;caption=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;content=https://juanlebrero.com/en/en/post/train-at-scale/&amp;canonicalUrl=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Tumblr in new tab"><i class="tumblr sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Tumblr</span></a></li><li><a rel="noopener noreferrer" target=_blank href="http://vk.com/share.php?title=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;url=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Vk in new tab"><i class="vk sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Vk</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://threads.net/intent/post?text=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;url=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Threads in new tab"><i class="threads sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Threads</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://twitter.com/intent/tweet/?text=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s.&amp;url=https://juanlebrero.com/en/en/post/train-at-scale/" role=button aria-label="Share on Twitter in new tab"><i class="twitter sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Twitter</span></a></li><li><a rel="noopener noreferrer" target=_blank href="https://www.xing.com/app/user?op=share;url=https://juanlebrero.com/en/en/post/train-at-scale/;title=Entrenamiento%20a%20Gran%20Escala:%20FSDP,%20QLoRA,%20y%20m%c3%a1s." role=button aria-label="Share on Xing in new tab"><i class="xing sri" aria-hidden=true></i>
-<span class="t srt" role=tooltip>Share on Xing</span></a></li></ul></nav></details></div><hr class=hide><footer id=main-footer><div id=unified-footer><p id=license>© 2025 Juan Lebrero</p></div></footer></main><footer id=body-footer class=pagewidth style=display:none><div id=background-footer class="background hide" role=presentation aria-hidden=true><div class=grain hidden></div></div><div id=focusMode></div><details id=has-a11y class="presentation js-details" name=on-deck aria-haspopup=true aria-labelledby=has-a11y-summary><summary id=has-a11y-summary accesskey=a aria-keyshortcuts=a><span>&nbsp;Accessibility</span>
-<kbd class=key aria-hidden=true>a</kbd></summary><fieldset id=a11y role=region aria-label=Accessibility data-i18n-optimizesr="Screen Reader Optimization" data-i18n-optimizesrdesc="Optimize display and resources for screen reader users who navigate with a pointer device." data-i18n-colorsettings="Color Settings" data-i18n-darkmode="Dark Mode" data-i18n-light=Light data-i18n-dark=Dark data-i18n-contrast=Contrast data-i18n-lesscontrast=Low data-i18n-morecontrast=High data-i18n-defaultcontrast=Default data-i18n-colorpalette="Color Palette" data-i18n-defaultcolor=Default data-i18n-deuteranopia=Deuteranopia data-i18n-protanopia=Protanopia data-i18n-tritanopia=Tritanopia data-i18n-monochrome=Monochrome data-i18n-fontsize="Font Size" data-i18n-baselinestretch="Baseline Stretch" data-i18n-opendyslexic="Use OpenDyslexic Font" data-i18n-menucontrols="Accessibility Menu Controls" data-i18n-save=Save data-i18n-reset=Reset data-i18n-close=Close data-i18n-bionread="BionRead Mode" data-i18n-focusmode="Focus Mode" data-i18n-nolocalstorage="LocalStorage is not available in your browser. Settings won't be saved."></fieldset><div class="screening js-cpn" role=presentation aria-hidden=true></div></details><div id=useBionRead class=sri></div><nav aria-label=Bypass><a id=to-top class=srm href=#top title="To Content Top" accesskey=c aria-keyshortcuts=c aria-label="To Content Top"><span class="t srt">To Content Top</span>
-<kbd class=key aria-hidden=true>c</kbd></a></nav></footer><div id=bionReadSnapshot hidden></div><div id=background-body role=presentation aria-hidden=true><div class=grain hidden></div><div id=dwclock hidden><div id=min><div class=hand></div></div><div id=hour><div class=hand></div></div></div></div></html>
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Entrenamiento a Gran Escala: FSDP, QLoRA, y más. | Juan Lebrero</title>
+<meta name="keywords" content="LoRA, QLoRA, LLMs, finetuning, cuantización, 4-bit, deepspeed, fsdp, zero, precisión, JAX, bfloat16, fp16">
+<meta name="description" content="Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad del entrenamiento. Por eso, en esta guía, vamos a ver conceptos como precisión numérica, paralelización de datos, cuantización, LoRA, y más.
+Precisión numérica
+La elección del formato numérico (FP32, FP16, BF16, FP8, INT8, etc.) constituye uno de los factores más determinantes para el rendimiento, el uso de memoria y la estabilidad del entrenamiento de modelos de gran escala. Por eso, es importante entender como funciona la precisión numérica y como afecta al rendimiento de los modelos, lo que se explicará en esta sección.">
+<meta name="author" content="Juan Francisco Lebrero">
+<link rel="canonical" href="http://localhost:1313/en/en/post/train-at-scale/">
+<link crossorigin="anonymous" href="http://localhost:1313/assets/css/stylesheet.08f7d74f0ada0f975d29ae436285b61ed7a719d05f350cb888d00341642995a2.css" integrity="sha256-CPfXTwraD5ddKa5DYoW2HtenGdBfNQy4iNADQWQplaI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/en/post/train-at-scale/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="Juan Lebrero (Alt + H)">Juan Lebrero</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="http://localhost:1313/es/" title="Español"
+                            aria-label="Español">Es</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/post/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Entrenamiento a Gran Escala: FSDP, QLoRA, y más.
+    </h1>
+    <div class="post-meta"><span title='2025-01-27 00:00:00 +0000 UTC'>January 27, 2025</span>&nbsp;·&nbsp;Juan Francisco Lebrero
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#precisi%c3%b3n-num%c3%a9rica" aria-label="Precisión numérica">Precisión numérica</a><ul>
+                        
+                <li>
+                    <a href="#por-qu%c3%a9-importa-la-precisi%c3%b3n" aria-label="¿Por qué Importa la Precisión?">¿Por qué Importa la Precisión?</a></li></ul>
+                </li>
+                <li>
+                    <a href="#formatos-de-precisi%c3%b3n-num%c3%a9rica" aria-label="Formatos de precisión numérica">Formatos de precisión numérica</a><ul>
+                        
+                <li>
+                    <a href="#fp32-ieee-754-precisi%c3%b3n-simple" aria-label="FP32 (IEEE 754, precisión simple)">FP32 (IEEE 754, precisión simple)</a></li>
+                <li>
+                    <a href="#fp16-ieee-754-half" aria-label="FP16 (IEEE 754, half)">FP16 (IEEE 754, half)</a></li>
+                <li>
+                    <a href="#bf16-brain-floating-point" aria-label="BF16 (Brain Floating Point)">BF16 (Brain Floating Point)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#comparaci%c3%b3n-de-precisiones" aria-label="Comparación de precisiones">Comparación de precisiones</a></li>
+                <li>
+                    <a href="#precisi%c3%b3n-mixta-y-optimizaciones" aria-label="Precisión Mixta y Optimizaciones">Precisión Mixta y Optimizaciones</a><ul>
+                        
+                <li>
+                    <a href="#implementaci%c3%b3n-de-precisi%c3%b3n-mixta" aria-label="Implementación de Precisión Mixta">Implementación de Precisión Mixta</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad del entrenamiento. Por eso, en esta guía, vamos a ver conceptos como precisión numérica, paralelización de datos, cuantización, LoRA, y más.</p>
+<h2 id="precisión-numérica">Precisión numérica<a hidden class="anchor" aria-hidden="true" href="#precisión-numérica">#</a></h2>
+<p>La elección del formato numérico (FP32, FP16, BF16, FP8, INT8, etc.) constituye uno de los factores más determinantes para el rendimiento, el uso de memoria y la estabilidad del entrenamiento de modelos de gran escala. Por eso, es importante entender como funciona la precisión numérica y como afecta al rendimiento de los modelos, lo que se explicará en esta sección.</p>
+<h3 id="por-qué-importa-la-precisión">¿Por qué Importa la Precisión?<a hidden class="anchor" aria-hidden="true" href="#por-qué-importa-la-precisión">#</a></h3>
+<p>Primero, necesitamos entender que intentan hacer los formatos de punto flotante. Principalmente, intentan representar un valor real de manera aproximada, y lo hacen con dos componentes clave: la <em>mantisa</em> y el <em>exponente</em>.</p>
+<p>Un número en punto flotante representa aproximadamente un valor real mediante la fórmula:</p>
+<p>$$\text{valor} \approx \text{signo} \times \text{mantisa} \times \text{base}^{\text{exponente}}$$</p>
+<p>donde:</p>
+<ul>
+<li><strong>Mantisa</strong>: Controla la resolución fina (cuántos pasos discretos entra en el intervalo 1.0 - 2.0)</li>
+<li><strong>Exponente</strong>: Determina el rango dinámico (qué tan grandes o pequeños pueden ser los números representables)</li>
+<li><strong>Base</strong>: En IEEE 754 es 2.</li>
+</ul>
+<p>Más bits para la mantisa $\rightarrow$ mayor precisión; más bits para el exponente $\rightarrow$ mayor rango</p>
+<figure>
+ <img src="images/layout.png" alt="Representación de Punto Flotante de 32 bits (FP32)" style="width: 100%; height: auto;">
+ <figcaption style="text-align: center; font-size: 0.95em; color: #666;">
+   Esquema de la representación de un número en punto flotante de 32 bits (FP32) según el estándar IEEE 754. <br>
+ </figcaption>
+</figure>
+<p>Pero, ¿por qué es importante?</p>
+<p>Bueno, hay tres razones principales por las que la precisión numérica es crucial en el entrenamiento de modelos de gran escala.</p>
+<ul>
+<li>
+<p><strong>Eficiencia computacional</strong>: Los formatos de menor ancho de bits aceleran el cómputo en Tensor Cores/TPUs y reducen significativamente el uso de memoria.</p>
+</li>
+<li>
+<p><strong>Estabilidad numérica</strong>: El rango dinámico y la granularidad de representación afectan directamente el underflow/overflow y el ruido numérico durante el entrenamiento.</p>
+</li>
+<li>
+<p><strong>Escabilidad</strong>: Entrenar LLMs a gran escala requiere aprovechar la precisión mixta para que el costo computacional sea viable económicamente.</p>
+</li>
+</ul>
+<h2 id="formatos-de-precisión-numérica">Formatos de precisión numérica<a hidden class="anchor" aria-hidden="true" href="#formatos-de-precisión-numérica">#</a></h2>
+<p>Los formatos de punto flotante son muy variados, pero los más comunes son:</p>
+<figure>
+ <img src="images/floating_point.png" alt="Comparativa de formatos de punto flotante: BF16, FP32 y FP16">
+ <figcaption style="text-align: center; font-size: 0.95em; color: #666;">
+   Comparación visual de los formatos de punto flotante más utilizados en deep learning: <b>BF16</b>, <b>FP32</b> y <b>FP16</b>. <br>
+ </figcaption>
+</figure>
+<h3 id="fp32-ieee-754-precisión-simple">FP32 (IEEE 754, precisión simple)<a hidden class="anchor" aria-hidden="true" href="#fp32-ieee-754-precisión-simple">#</a></h3>
+<p>Este es el punto de referencia para casi todo. Usa 1 bit de signo, 8 de exponente y 23 de mantisa. Su épsilon es $\varepsilon \approx 2^{-23} \approx 1.19\times10^{-7}$ y cubre un rango amplio, desde $1.18\times10^{-38}$ hasta $3.4\times10^{38}$.</p>
+<p>En práctica de ML lo tomamos como “precisión plena”. Incluso cuando trabajamos con precisión mixta, los acumuladores de gradientes se mantienen en FP32 para que el entrenamiento no se desestabilice.</p>
+<h3 id="fp16-ieee-754-half">FP16 (IEEE 754, half)<a hidden class="anchor" aria-hidden="true" href="#fp16-ieee-754-half">#</a></h3>
+<p>Acá buscamos velocidad y ahorro de memoria. FP16 tiene 1 bit de signo, 5 de exponente y 10 de mantisa, con $\varepsilon \approx 2^{-10} \approx 9.77\times10^{-4}$ y rango aproximado de $6.1\times10^{-5}$ a $6.55\times10^{4}$. Suele acelerar tanto el entrenamiento como la inferencia, aunque conviene usar <a href="https://picdictionary.com/ml-dictionary/loss-scaling-in-ai-and-deep-learning" target="_blank" rel="noopener">loss scaling</a> para que los gradientes chicos no desaparezcan.</p>
+<p>Además, ofrece mejor resolución fraccional que BF16, pero el rango dinámico es más corto, así que se puede llegar a saturar con activaciones o gradientes grandes y “apagar” señales muy chiquititas.</p>
+<h3 id="bf16-brain-floating-point">BF16 (Brain Floating Point)<a hidden class="anchor" aria-hidden="true" href="#bf16-brain-floating-point">#</a></h3>
+<p>El favorito actual para entrenar modelos grandes en TPUs y GPUs, como una H100. Tiene 1 bit de signo, 8 de exponente y 7 de mantisa, con $\varepsilon \approx 2^{-7} \approx 7.81\times10^{-3}$. Lo clave es que comparte el mismo rango que FP32, de $1.18\times10^{-38}$ a $3.4\times10^{38}$. En la práctica suele funcionar sin <em>loss scaling</em>. Mantiene el rango amplio que evita overflows y underflows molestos, y aunque la resolución fraccional sea menor que en FP16, para LLMs entrenando en serio suele alcanzar sin dramas.</p>
+<h2 id="comparación-de-precisiones">Comparación de precisiones<a hidden class="anchor" aria-hidden="true" href="#comparación-de-precisiones">#</a></h2>
+<p>Para comparar las precisiones, voy a usar JAX, que es un framework de ML hecho por Google, que permite realizar operaciones de manera eficiente en GPUs y TPUs. La razón de utilizar JAX y no PyTorch, por ejemplo, es que JAX nos permitirá más adelante ver en &ldquo;crudo&rdquo; la paralelización de las operaciones y la optimización de la memoria.</p>
+<p>Primero, importamos JAX y vemos la versión y el backend, así como los dispositivos disponibles:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">jax</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Configuración de JAX</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;JAX version: </span><span class="si">{</span><span class="n">jax</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;JAX backend: </span><span class="si">{</span><span class="n">jax</span><span class="o">.</span><span class="n">default_backend</span><span class="p">()</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Available devices: </span><span class="si">{</span><span class="n">jax</span><span class="o">.</span><span class="n">devices</span><span class="p">()</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>Para medir el rendimiento y la memoria, necesitamos funciones para obtener el uso de memoria y medir el tiempo de ejecución. Para esto, vamos a usar <code>psutil</code>, <code>tracemalloc</code> y <code>time</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">psutil</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tracemalloc</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_memory_usage</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">   <span class="s2">&#34;&#34;&#34;Obtiene el uso actual de memoria en MB&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">   <span class="n">process</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">process</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">measure_memory_and_time</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">   <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">       <span class="n">tracemalloc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">       <span class="n">start_memory</span> <span class="o">=</span> <span class="n">get_memory_usage</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">       <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">       <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">jax</span><span class="o">.</span><span class="n">block_until_ready</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">       <span class="n">end_memory</span> <span class="o">=</span> <span class="n">get_memory_usage</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">       <span class="n">current</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span> <span class="n">tracemalloc</span><span class="o">.</span><span class="n">get_traced_memory</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">       <span class="n">tracemalloc</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">       <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;execution_time&#39;</span><span class="p">:</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;memory_delta&#39;</span><span class="p">:</span> <span class="n">end_memory</span> <span class="o">-</span> <span class="n">start_memory</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;peak_memory&#39;</span><span class="p">:</span> <span class="n">peak</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;current_memory&#39;</span><span class="p">:</span> <span class="n">current</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+</span></span><span class="line"><span class="cl">       <span class="p">}</span>
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">wrapper</span>
+</span></span></code></pre></div><p>Ahora, vamos a medir el rendimiento y la memoria de la multiplicación de matrices y la red neuronal. Para esto, vamos a usar la función <code>measure_memory_and_time</code> que definimos anteriormente.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@measure_memory_and_time</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">matrix_multiplication_test</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">   <span class="s2">&#34;&#34;&#34;Prueba de multiplicación de matrices con precisión dada&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">   <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">   <span class="k">def</span> <span class="nf">matmul_operation</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">       <span class="n">a</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">key1</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">b</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">key2</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">matmul_operation</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@measure_memory_and_time</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">neural_network_forward_pass_test</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">   <span class="s2">&#34;&#34;&#34;Prueba de pase forward de red neuronal simple&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">   <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="n">keys</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">   <span class="k">def</span> <span class="nf">nn_forward</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">       <span class="c1"># Inicialización de pesos</span>
+</span></span><span class="line"><span class="cl">       <span class="n">W1</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">b1</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">hidden_size</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">W2</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">b2</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">(</span><span class="n">output_size</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">       <span class="c1"># Datos de entrada</span>
+</span></span><span class="line"><span class="cl">       <span class="n">x</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">input_size</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">       <span class="c1"># Pase forward</span>
+</span></span><span class="line"><span class="cl">       <span class="n">h</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W1</span><span class="p">)</span> <span class="o">+</span> <span class="n">b1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">W2</span><span class="p">)</span> <span class="o">+</span> <span class="n">b2</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">       <span class="k">return</span> <span class="n">y</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">nn_forward</span><span class="p">()</span>
+</span></span></code></pre></div><p>Para correr las pruebas, simplemente llamamos a las funciones <code>matrix_multiplication_test</code> y <code>neural_network_forward_pass_test</code> con los tipos de precisión y las dimensiones de las matrices y la red neuronal, por ejemplo:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">matrix_multiplication_test</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">neural_network_forward_pass_test</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="mi">784</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></span></code></pre></div><p>Corriendo las pruebas en un M1, obtenemos los siguientes resultados para la multiplicación de matrices:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Precisión</th>
+          <th>Tiempo (s)</th>
+          <th>Memoria Delta (MB)</th>
+          <th>Memoria Pico (MB)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>FP16</td>
+          <td>1.024</td>
+          <td>448.61</td>
+          <td>0.013</td>
+      </tr>
+      <tr>
+          <td>BF16</td>
+          <td>0.978</td>
+          <td>49.33</td>
+          <td>0.008</td>
+      </tr>
+      <tr>
+          <td>FP32</td>
+          <td>0.943</td>
+          <td>-49.25</td>
+          <td>0.008</td>
+      </tr>
+      <tr>
+          <td>FP64</td>
+          <td>0.928</td>
+          <td>7.84</td>
+          <td>0.009</td>
+      </tr>
+  </tbody>
+</table>
+<p>Y para la red neuronal:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Precisión</th>
+          <th>Tiempo (s)</th>
+          <th>Memoria Delta (MB)</th>
+          <th>Memoria Pico (MB)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>FP16</td>
+          <td>0.007</td>
+          <td>11.59</td>
+          <td>0.020</td>
+      </tr>
+      <tr>
+          <td>BF16</td>
+          <td>0.004</td>
+          <td>4.81</td>
+          <td>0.015</td>
+      </tr>
+      <tr>
+          <td>FP32</td>
+          <td>0.003</td>
+          <td>7.16</td>
+          <td>0.015</td>
+      </tr>
+      <tr>
+          <td>FP64</td>
+          <td>0.002</td>
+          <td>0.14</td>
+          <td>0.016</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>NOTA</strong>: NOTAR QUE FP64 ES EL MÁS RÁPIDO, EXTRAÑAMENTE. ESTOS RESULTADOS SON PARA UN CPU. CABE DESTACAR QUE JAX ESTÁ OPTIMIZADO PARA GPUs, ADEMÁS DE QUE:</p>
+<ol>
+<li><strong>En CPUs modernos</strong> (como el M1), las operaciones FP64 pueden ser más eficientes debido a optimizaciones específicas del hardware y la arquitectura ARM.</li>
+<li><strong>En GPUs</strong>, el rendimiento se invierte dramáticamente: FP16/BF16 son significativamente más rápidos que FP32/FP64 debido a:</li>
+</ol>
+<ul>
+<li>Unidades de procesamiento especializadas (Tensor Cores en NVIDIA)</li>
+<li>Mayor paralelización de operaciones de menor precisión</li>
+<li>Menor uso de memoria y ancho de banda</li>
+</ul>
+<ol start="3">
+<li><strong>JAX utiliza XLA</strong> (Accelerated Linear Algebra) que optimiza automáticamente el código para el hardware disponible, lo que puede explicar estas diferencias de rendimiento.</li>
+<li><strong>Para entrenamiento real</strong>, se recomienda usar FP16/BF16 en GPUs para obtener el mejor rendimiento y eficiencia de memoria.</li>
+</ol>
+<h2 id="precisión-mixta-y-optimizaciones">Precisión Mixta y Optimizaciones<a hidden class="anchor" aria-hidden="true" href="#precisión-mixta-y-optimizaciones">#</a></h2>
+<h3 id="implementación-de-precisión-mixta">Implementación de Precisión Mixta<a hidden class="anchor" aria-hidden="true" href="#implementación-de-precisión-mixta">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Ejemplo de entrenamiento con precisión mixta</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">mixed_precision_forward_pass</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># Convertir a FP32 para cómputo</span>
+</span></span><span class="line"><span class="cl">   <span class="n">x_fp32</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="n">W_fp32</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="n">b_fp32</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">   <span class="c1"># Pase forward</span>
+</span></span><span class="line"><span class="cl">   <span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x_fp32</span><span class="p">,</span> <span class="n">W_fp32</span><span class="p">)</span> <span class="o">+</span> <span class="n">b_fp32</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">   <span class="c1"># Convertir de vuelta a FP16 para eficiencia de memoria</span>
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float16</span><span class="p">)</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/en/tags/lora/">LoRA</a></li>
+      <li><a href="http://localhost:1313/en/tags/qlora/">QLoRA</a></li>
+      <li><a href="http://localhost:1313/en/tags/llms/">LLMs</a></li>
+      <li><a href="http://localhost:1313/en/tags/finetuning/">Finetuning</a></li>
+      <li><a href="http://localhost:1313/en/tags/cuantizaci%C3%B3n/">Cuantización</a></li>
+      <li><a href="http://localhost:1313/en/tags/4-bit/">4-Bit</a></li>
+      <li><a href="http://localhost:1313/en/tags/deepspeed/">Deepspeed</a></li>
+      <li><a href="http://localhost:1313/en/tags/fsdp/">Fsdp</a></li>
+      <li><a href="http://localhost:1313/en/tags/zero/">Zero</a></li>
+      <li><a href="http://localhost:1313/en/tags/precisi%C3%B3n/">Precisión</a></li>
+      <li><a href="http://localhost:1313/en/tags/jax/">JAX</a></li>
+      <li><a href="http://localhost:1313/en/tags/bfloat16/">Bfloat16</a></li>
+      <li><a href="http://localhost:1313/en/tags/fp16/">Fp16</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/en/">Juan Lebrero</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
