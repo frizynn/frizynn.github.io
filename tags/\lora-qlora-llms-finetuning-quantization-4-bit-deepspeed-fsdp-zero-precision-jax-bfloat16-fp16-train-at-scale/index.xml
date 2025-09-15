@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>\[&#34;LoRA&#34;, &#34;QLoRA&#34;, &#34;LLMs&#34;, &#34;Finetuning&#34;, &#34;Quantization&#34;, &#34;4-Bit&#34;, &#34;DeepSpeed&#34;, &#34;FSDP&#34;, &#34;ZeRO&#34;, &#34;Precision&#34;, &#34;JAX&#34;, &#34;Bfloat16&#34;, &#34;Fp16&#34;, &#34;Train-at-Scale&#34;] on Juan Lebrero</title>
+    <link>http://localhost:1313/tags/%5Clora-qlora-llms-finetuning-quantization-4-bit-deepspeed-fsdp-zero-precision-jax-bfloat16-fp16-train-at-scale/</link>
+    <description>Recent content in \[&#34;LoRA&#34;, &#34;QLoRA&#34;, &#34;LLMs&#34;, &#34;Finetuning&#34;, &#34;Quantization&#34;, &#34;4-Bit&#34;, &#34;DeepSpeed&#34;, &#34;FSDP&#34;, &#34;ZeRO&#34;, &#34;Precision&#34;, &#34;JAX&#34;, &#34;Bfloat16&#34;, &#34;Fp16&#34;, &#34;Train-at-Scale&#34;] on Juan Lebrero</description>
+    <generator>Hugo -- 0.150.0</generator>
+    <language>en</language>
+    <atom:link href="http://localhost:1313/tags/%5Clora-qlora-llms-finetuning-quantization-4-bit-deepspeed-fsdp-zero-precision-jax-bfloat16-fp16-train-at-scale/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>
