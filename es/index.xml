@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Juan Lebrero</title><link>https://juanlebrero.com/es/</link><description>Recent content on Juan Lebrero</description><generator>Hugo</generator><language>es</language><lastBuildDate>Sat, 13 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://juanlebrero.com/es/index.xml" rel="self" type="application/rss+xml"/><item><title>Entrenamiento a Gran Escala: FSDP, QLoRA, y más.</title><link>https://juanlebrero.com/es/posts/train-at-scale/</link><pubDate>Sat, 13 Sep 2025 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/posts/train-at-scale/</guid><description>&lt;p&gt;Para poder entrenar modelos a gran escala, necesitamos entender diversos conceptos que nos van a ayudar a optimizar el rendimiento y la estabilidad del entrenamiento. Por eso, vamos a ver conceptos como precisión numérica, paralelización de datos, cuantización, LoRA, y más.&lt;/p&gt;
-&lt;h2 id="precisión-numérica"&gt;Precisión numérica&lt;/h2&gt;
-&lt;p&gt;La elección del formato numérico (FP32, FP16, BF16, FP8, INT8, etc.) constituye uno de los factores más determinantes para el rendimiento, el uso de memoria y la estabilidad del entrenamiento de modelos de gran escala. Por eso, es importante entender como funciona la precisión numérica y como afecta al rendimiento de los modelos, lo que se explicará en esta sección.&lt;/p&gt;</description></item><item><title>Acerca de mí</title><link>https://juanlebrero.com/es/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/about/</guid><description>&lt;p&gt;Soy un Ingeniero de IA/ML y Asistente de Investigación en LiNAR, Universidad de San Andrés (UdeSA), actualmente cursando Ingeniería de Inteligencia Artificial. Me apasiona construir soluciones de IA prácticas que generen un impacto real.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Juan Lebrero</title><link>https://juanlebrero.com/es/</link><description>Recent content on Juan Lebrero</description><generator>Hugo</generator><language>es</language><lastBuildDate>Thu, 06 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://juanlebrero.com/es/index.xml" rel="self" type="application/rss+xml"/><item><title>Haciendo sufrir a los autoencoders: El caso de los Masked Autoencoders</title><link>https://juanlebrero.com/es/posts/vit-mae/</link><pubDate>Thu, 06 Nov 2025 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/posts/vit-mae/</guid><description>&lt;p&gt;Imaginá intentar aprender un idioma viendo solo el 25% de cada oración. Suena como una idea terrible, ¿no?&lt;/p&gt;
+&lt;p&gt;Bueno, resulta que esto es exactamente lo que hacen los Vision Transformer Masked Autoencoders (ViT-MAE) con las imágenes. El paper &amp;ldquo;Masked Autoencoders Are Scalable Vision Learners&amp;rdquo; de He et al. mostró algo bastante loco: si ocultás el 75% de una imagen (dividiéndola en parches y enmascarando aleatoriamente el 75% de ellos) y le pedís a un modelo que la reconstruya, obtenés representaciones visuales sorprendentemente poderosas.&lt;/p&gt;</description></item><item><title>Acerca de mí</title><link>https://juanlebrero.com/es/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/about/</guid><description>&lt;p&gt;Soy un Ingeniero de IA/ML y Asistente de Investigación en LiNAR, Universidad de San Andrés (UdeSA), actualmente cursando Ingeniería de Inteligencia Artificial. Me apasiona construir soluciones de IA prácticas que generen un impacto real.&lt;/p&gt;
 &lt;h2 id="trabajo-actual"&gt;Trabajo Actual&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Asistente de Investigación en LiNAR, UdeSA&lt;/strong&gt; (Ago 2025 – Presente)&lt;/p&gt;
 &lt;ul&gt;
@@ -12,20 +11,19 @@
 &lt;li&gt;Construí ASR en tiempo real y clasificación de llamadas para 911, priorizando alertas críticas&lt;/li&gt;
 &lt;li&gt;Investigando desruido, VAD y ASR streaming para endurecer transcripciones en entornos operativos ruidosos&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Ingeniero de Machine Learning en PSAG&lt;/strong&gt; (Abr 2025 – Presente)&lt;/p&gt;</description></item><item><title>Contacto</title><link>https://juanlebrero.com/es/contact/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/contact/</guid><description>&lt;h1 id="contacto"&gt;Contacto&lt;/h1&gt;
-&lt;p&gt;¡Siempre estoy interesado en conectar con otros ingenieros ML, investigadores y cualquiera apasionado por la IA!&lt;/p&gt;
-&lt;h2 id="ponte-en-contacto"&gt;Ponte en Contacto&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Ingeniero de Machine Learning en PSAG&lt;/strong&gt; (Abr 2025 – Presente)&lt;/p&gt;</description></item><item><title>Contacto</title><link>https://juanlebrero.com/es/contact/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/contact/</guid><description>&lt;p&gt;Siempre me entusiasma conectar con otros ingenieros de Machine Learning, investigadores o cualquier persona apasionada por la inteligencia artificial.&lt;/p&gt;
+&lt;h2 id="cómo-contactarme"&gt;Cómo contactarme&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Twitter/X&lt;/strong&gt;: &lt;a href="https://x.com/lebrious"&gt;@lebrious&lt;/a&gt; - Actualizaciones rápidas y pensamientos&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;LinkedIn&lt;/strong&gt;: &lt;a href="https://www.linkedin.com/in/lebrero-juan-francisco/"&gt;Juan Francisco Lebrero&lt;/a&gt; - Networking profesional&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Email&lt;/strong&gt;: &lt;a href="mailto:contact@juanlebrero.com"&gt;contact@juanlebrero.com&lt;/a&gt; - Comunicación directa&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Twitter/X&lt;/strong&gt;: &lt;a href="https://x.com/lebrious"&gt;@lebrious&lt;/a&gt; – Para novedades rápidas y reflexiones&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LinkedIn&lt;/strong&gt;: &lt;a href="https://www.linkedin.com/in/lebrero-juan-francisco/"&gt;Juan Francisco Lebrero&lt;/a&gt; – Para networking profesional&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Email&lt;/strong&gt;: &lt;a href="mailto:lebrerojuanfrancisco@gmail.com"&gt;lebrerojuanfrancisco@gmail.com&lt;/a&gt; – Para comunicación directa&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="en-qué-estoy-interesado"&gt;En qué estoy Interesado&lt;/h2&gt;
+&lt;h2 id="qué-me-interesa"&gt;Qué me interesa&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Colaboración&lt;/strong&gt;: Abierto a discutir proyectos ML e investigación&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Charlas&lt;/strong&gt;: Disponible para hablar sobre entrenamiento a gran escala e ingeniería ML&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Consultoría&lt;/strong&gt;: Interesado en ayudar con infraestructura ML y desafíos de entrenamiento&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Mentoría&lt;/strong&gt;: Feliz de compartir conocimiento y ayudar a otros en el campo&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Colaboración&lt;/strong&gt;: Siempre abierto a debatir proyectos o ideas relacionadas con ML e investigación&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Charlas&lt;/strong&gt;: Disponible para conferencias o charlas sobre entrenamiento a gran escala e ingeniería ML&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consultoría&lt;/strong&gt;: Interesado en asesorar sobre infraestructura para ML y resolver retos de entrenamiento&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mentoría&lt;/strong&gt;: Me encanta compartir lo que sé y ayudar a quienes empiezan o quieren profundizar en esta área&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="tiempo-de-respuesta"&gt;Tiempo de Respuesta&lt;/h2&gt;
-&lt;p&gt;Típicamente respondo a mensajes en 24-48 horas. Para asuntos urgentes, Twitter/X suele ser la forma más rápida de contactarme.&lt;/p&gt;</description></item></channel></rss>
+&lt;h2 id="tiempo-de-respuesta"&gt;Tiempo de respuesta&lt;/h2&gt;
+&lt;p&gt;Suelo responder los mensajes en 24-48 horas. Si es algo urgente, el correo suele ser el canal más rápido.&lt;/p&gt;</description></item></channel></rss>
