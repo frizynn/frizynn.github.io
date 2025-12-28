@@ -1,33 +1,17 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Juan Lebrero</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content on Juan Lebrero</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Thu, 06 Nov 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Masked Autoencoders: Because Suffering Builds Character (Even for AI)</title>
-      <link>http://localhost:1313/posts/vit-mae/</link>
-      <pubDate>Thu, 06 Nov 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/vit-mae/</guid>
-      <description>&lt;p&gt;Imagine trying to learn a language by only seeing 25% of each sentence. That sounds like a terrible idea, right? Yet this is exactly what Vision Transformer Masked Autoencoders (ViT-MAE) do with images. The paper &amp;ldquo;Masked Autoencoders Are Scalable Vision Learners&amp;rdquo; by He et al. showed that hiding 75% of an image (by splitting it into patches and randomly masking 75% of them) and asking a model to reconstruct it produces remarkably powerful visual representations. It turns out that what you don&amp;rsquo;t see can teach you a lot about what you do.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>About</title>
-      <link>http://localhost:1313/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/</guid>
-      <description>&lt;p&gt;I am Juan Francisco Lebrero, an AI enthusiast dedicated to exploring how artificial intelligence can transform our reality. My journey is defined by a search for solutions that are not only technically rigorous but also hold tangible impact in the world around us. Currently, I am pursuing a B.Sc. in Artificial Intelligence Engineering at the University of San Andrés (UdeSA), where I delve into the frontiers of this discipline.&lt;/p&gt;&#xA;&lt;h2 id=&#34;a-journey-through-innovation&#34;&gt;A Journey through Innovation&lt;/h2&gt;&#xA;&lt;p&gt;In my current role as a Research Assistant at LiNAR, I focus on one of the most compelling applications of computer vision: the non-invasive assessment of embryos in IVF processes. My work involves developing models to predict viability without the need for biopsies, utilizing advanced time-lapse imaging techniques.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Contact</title>
-      <link>http://localhost:1313/contact/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/contact/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;m always interested in connecting with fellow ML engineers, researchers, and anyone passionate about AI!&lt;/p&gt;&#xA;&lt;h2 id=&#34;get-in-touch&#34;&gt;Get in Touch&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;LinkedIn&lt;/strong&gt;: &lt;a href=&#34;https://www.linkedin.com/in/lebrero-juan-francisco/&#34;&gt;Juan Francisco Lebrero&lt;/a&gt; - Professional networking&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Email&lt;/strong&gt;: &lt;a href=&#34;mailto:lebrerojuanfrancisco@gmail.com&#34;&gt;lebrerojuanfrancisco@gmail.com&lt;/a&gt; - Direct communication&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;what-im-interested-in&#34;&gt;What I&amp;rsquo;m Interested In&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Collaboration&lt;/strong&gt;: Open to discussing ML projects and research&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Speaking&lt;/strong&gt;: Available for talks on large-scale training and ML engineering&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Consulting&lt;/strong&gt;: Interested in helping with ML infrastructure and training challenges&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Mentoring&lt;/strong&gt;: Happy to share knowledge and help others in the field&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;response-time&#34;&gt;Response Time&lt;/h2&gt;&#xA;&lt;p&gt;I typically respond to messages within 24-48 hours. For urgent matters, Mail is usually the fastest way to reach me.&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Juan Lebrero</title><link>https://juanlebrero.com/</link><description>Recent content on Juan Lebrero</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 06 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://juanlebrero.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Masked Autoencoders: Because Suffering Builds Character (Even for AI)</title><link>https://juanlebrero.com/posts/vit-mae/</link><pubDate>Thu, 06 Nov 2025 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/posts/vit-mae/</guid><description>&lt;p&gt;Imagine trying to learn a language by only seeing 25% of each sentence. That sounds like a terrible idea, right? Yet this is exactly what Vision Transformer Masked Autoencoders (ViT-MAE) do with images. The paper &amp;ldquo;Masked Autoencoders Are Scalable Vision Learners&amp;rdquo; by He et al. showed that hiding 75% of an image (by splitting it into patches and randomly masking 75% of them) and asking a model to reconstruct it produces remarkably powerful visual representations. It turns out that what you don&amp;rsquo;t see can teach you a lot about what you do.&lt;/p&gt;</description></item><item><title>About</title><link>https://juanlebrero.com/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/about/</guid><description>&lt;p&gt;I am Juan Francisco Lebrero, an AI enthusiast dedicated to exploring how artificial intelligence can transform our reality. My journey is defined by a search for solutions that are not only technically rigorous but also hold tangible impact in the world around us. Currently, I am pursuing a B.Sc. in Artificial Intelligence Engineering at the University of San Andrés (UdeSA), where I delve into the frontiers of this discipline.&lt;/p&gt;
+&lt;h2 id="a-journey-through-innovation"&gt;A Journey through Innovation&lt;/h2&gt;
+&lt;p&gt;In my current role as a Research Assistant at LiNAR, I focus on one of the most compelling applications of computer vision: the non-invasive assessment of embryos in IVF processes. My work involves developing models to predict viability without the need for biopsies, utilizing advanced time-lapse imaging techniques.&lt;/p&gt;</description></item><item><title>Contact</title><link>https://juanlebrero.com/contact/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/contact/</guid><description>&lt;p&gt;I&amp;rsquo;m always interested in connecting with fellow ML engineers, researchers, and anyone passionate about AI!&lt;/p&gt;
+&lt;h2 id="get-in-touch"&gt;Get in Touch&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;LinkedIn&lt;/strong&gt;: &lt;a href="https://www.linkedin.com/in/lebrero-juan-francisco/"&gt;Juan Francisco Lebrero&lt;/a&gt; - Professional networking&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Email&lt;/strong&gt;: &lt;a href="mailto:lebrerojuanfrancisco@gmail.com"&gt;lebrerojuanfrancisco@gmail.com&lt;/a&gt; - Direct communication&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="what-im-interested-in"&gt;What I&amp;rsquo;m Interested In&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Collaboration&lt;/strong&gt;: Open to discussing ML projects and research&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Speaking&lt;/strong&gt;: Available for talks on large-scale training and ML engineering&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consulting&lt;/strong&gt;: Interested in helping with ML infrastructure and training challenges&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mentoring&lt;/strong&gt;: Happy to share knowledge and help others in the field&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="response-time"&gt;Response Time&lt;/h2&gt;
+&lt;p&gt;I typically respond to messages within 24-48 hours. For urgent matters, Mail is usually the fastest way to reach me.&lt;/p&gt;</description></item></channel></rss>

@@ -1,33 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Juan Lebrero</title>
-    <link>http://localhost:1313/es/</link>
-    <description>Recent content on Juan Lebrero</description>
-    <generator>Hugo</generator>
-    <language>es</language>
-    <lastBuildDate>Thu, 06 Nov 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/es/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Haciendo sufrir a los autoencoders: El caso de los Masked Autoencoders</title>
-      <link>http://localhost:1313/es/posts/vit-mae/</link>
-      <pubDate>Thu, 06 Nov 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/es/posts/vit-mae/</guid>
-      <description>&lt;p&gt;Imaginá intentar aprender un idioma viendo solo el 25% de cada oración. Suena como una idea terrible, ¿no?&lt;/p&gt;&#xA;&lt;p&gt;Bueno, resulta que esto es exactamente lo que hacen los Vision Transformer Masked Autoencoders (ViT-MAE) con las imágenes. El paper &amp;ldquo;Masked Autoencoders Are Scalable Vision Learners&amp;rdquo; de He et al. mostró algo bastante loco: si ocultás el 75% de una imagen (dividiéndola en parches y enmascarando aleatoriamente el 75% de ellos) y le pedís a un modelo que la reconstruya, obtenés representaciones visuales sorprendentemente poderosas.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Acerca de mí</title>
-      <link>http://localhost:1313/es/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/es/about/</guid>
-      <description>&lt;p&gt;Soy Juan Francisco Lebrero, un apasionado de la inteligencia artificial y su capacidad para transformar la realidad. Mi camino está definido por la búsqueda de soluciones que no solo sean técnicamente rigurosas, sino que tengan un impacto tangible en el mundo que nos rodea. Actualmente, curso Ingeniería de Inteligencia Artificial en la Universidad de San Andrés (UdeSA), donde exploro las fronteras de esta disciplina.&lt;/p&gt;&#xA;&lt;h2 id=&#34;un-recorrido-por-la-innovación&#34;&gt;Un Recorrido por la Innovación&lt;/h2&gt;&#xA;&lt;p&gt;En mi rol actual como Asistente de Investigación en LiNAR, me dedico a una de las aplicaciones más fascinantes de la visión computacional: la evaluación no invasiva de embriones en procesos de fecundación in vitro. Mi trabajo se centra en desarrollar modelos que puedan predecir la viabilidad sin necesidad de biopsias, utilizando técnicas avanzadas de procesamiento de imágenes temporales.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Contacto</title>
-      <link>http://localhost:1313/es/contact/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/es/contact/</guid>
-      <description>&lt;p&gt;Siempre me entusiasma conectar con otros ingenieros de Machine Learning, investigadores o cualquier persona apasionada por la inteligencia artificial.&lt;/p&gt;&#xA;&lt;h2 id=&#34;cómo-contactarme&#34;&gt;Cómo contactarme&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;LinkedIn&lt;/strong&gt;: &lt;a href=&#34;https://www.linkedin.com/in/lebrero-juan-francisco/&#34;&gt;Juan Francisco Lebrero&lt;/a&gt; – Para networking profesional&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Email&lt;/strong&gt;: &lt;a href=&#34;mailto:lebrerojuanfrancisco@gmail.com&#34;&gt;lebrerojuanfrancisco@gmail.com&lt;/a&gt; – Para comunicación directa&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;qué-me-interesa&#34;&gt;Qué me interesa&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Colaboración&lt;/strong&gt;: Siempre abierto a debatir proyectos o ideas relacionadas con ML e investigación&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Charlas&lt;/strong&gt;: Disponible para conferencias o charlas sobre entrenamiento a gran escala e ingeniería ML&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Consultoría&lt;/strong&gt;: Interesado en asesorar sobre infraestructura para ML y resolver retos de entrenamiento&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Mentoría&lt;/strong&gt;: Me encanta compartir lo que sé y ayudar a quienes empiezan o quieren profundizar en esta área&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;tiempo-de-respuesta&#34;&gt;Tiempo de respuesta&lt;/h2&gt;&#xA;&lt;p&gt;Suelo responder los mensajes en 24-48 horas. Si es algo urgente, el correo suele ser el canal más rápido.&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Juan Lebrero</title><link>https://juanlebrero.com/es/</link><description>Recent content on Juan Lebrero</description><generator>Hugo</generator><language>es</language><lastBuildDate>Thu, 06 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://juanlebrero.com/es/index.xml" rel="self" type="application/rss+xml"/><item><title>Haciendo sufrir a los autoencoders: El caso de los Masked Autoencoders</title><link>https://juanlebrero.com/es/posts/vit-mae/</link><pubDate>Thu, 06 Nov 2025 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/posts/vit-mae/</guid><description>&lt;p&gt;Imaginá intentar aprender un idioma viendo solo el 25% de cada oración. Suena como una idea terrible, ¿no?&lt;/p&gt;
+&lt;p&gt;Bueno, resulta que esto es exactamente lo que hacen los Vision Transformer Masked Autoencoders (ViT-MAE) con las imágenes. El paper &amp;ldquo;Masked Autoencoders Are Scalable Vision Learners&amp;rdquo; de He et al. mostró algo bastante loco: si ocultás el 75% de una imagen (dividiéndola en parches y enmascarando aleatoriamente el 75% de ellos) y le pedís a un modelo que la reconstruya, obtenés representaciones visuales sorprendentemente poderosas.&lt;/p&gt;</description></item><item><title>Acerca de mí</title><link>https://juanlebrero.com/es/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/about/</guid><description>&lt;p&gt;Soy Juan Francisco Lebrero, un apasionado de la inteligencia artificial y su capacidad para transformar la realidad. Mi camino está definido por la búsqueda de soluciones que no solo sean técnicamente rigurosas, sino que tengan un impacto tangible en el mundo que nos rodea. Actualmente, curso Ingeniería de Inteligencia Artificial en la Universidad de San Andrés (UdeSA), donde exploro las fronteras de esta disciplina.&lt;/p&gt;
+&lt;h2 id="un-recorrido-por-la-innovación"&gt;Un Recorrido por la Innovación&lt;/h2&gt;
+&lt;p&gt;En mi rol actual como Asistente de Investigación en LiNAR, me dedico a una de las aplicaciones más fascinantes de la visión computacional: la evaluación no invasiva de embriones en procesos de fecundación in vitro. Mi trabajo se centra en desarrollar modelos que puedan predecir la viabilidad sin necesidad de biopsias, utilizando técnicas avanzadas de procesamiento de imágenes temporales.&lt;/p&gt;</description></item><item><title>Contacto</title><link>https://juanlebrero.com/es/contact/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://juanlebrero.com/es/contact/</guid><description>&lt;p&gt;Siempre me entusiasma conectar con otros ingenieros de Machine Learning, investigadores o cualquier persona apasionada por la inteligencia artificial.&lt;/p&gt;
+&lt;h2 id="cómo-contactarme"&gt;Cómo contactarme&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;LinkedIn&lt;/strong&gt;: &lt;a href="https://www.linkedin.com/in/lebrero-juan-francisco/"&gt;Juan Francisco Lebrero&lt;/a&gt; – Para networking profesional&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Email&lt;/strong&gt;: &lt;a href="mailto:lebrerojuanfrancisco@gmail.com"&gt;lebrerojuanfrancisco@gmail.com&lt;/a&gt; – Para comunicación directa&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="qué-me-interesa"&gt;Qué me interesa&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Colaboración&lt;/strong&gt;: Siempre abierto a debatir proyectos o ideas relacionadas con ML e investigación&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Charlas&lt;/strong&gt;: Disponible para conferencias o charlas sobre entrenamiento a gran escala e ingeniería ML&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consultoría&lt;/strong&gt;: Interesado en asesorar sobre infraestructura para ML y resolver retos de entrenamiento&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mentoría&lt;/strong&gt;: Me encanta compartir lo que sé y ayudar a quienes empiezan o quieren profundizar en esta área&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="tiempo-de-respuesta"&gt;Tiempo de respuesta&lt;/h2&gt;
+&lt;p&gt;Suelo responder los mensajes en 24-48 horas. Si es algo urgente, el correo suele ser el canal más rápido.&lt;/p&gt;</description></item></channel></rss>
