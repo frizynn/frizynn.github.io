@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Grafos on Juan Lebrero</title>
+    <link>http://localhost:1313/es/tags/grafos/</link>
+    <description>Recent content in Grafos on Juan Lebrero</description>
+    <generator>Hugo</generator>
+    <language>es</language>
+    <lastBuildDate>Tue, 30 Dec 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/es/tags/grafos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>La Biblioteca de los Grafos: Una Crónica sobre GraphRAG</title>
+      <link>http://localhost:1313/es/posts/graph-rag/</link>
+      <pubDate>Tue, 30 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/es/posts/graph-rag/</guid>
+      <description>&lt;p&gt;He imaginado alguna vez que el mundo es una biblioteca infinita, un laberinto de anaqueles que guardan todos los libros posibles. Sin embargo, leerlos todos es una tarea que excede la brevedad de una vida humana. Para ayudarnos en esta fatiga, han surgido los sistemas de recuperación de información, conocidos como RAG. Pero los sistemas convencionales son ciegos ante la totalidad; solo ven fragmentos, migajas de un banquete que no alcanzan a comprender.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
