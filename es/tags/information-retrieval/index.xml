@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Information Retrieval on Juan Lebrero</title>
+    <link>http://localhost:1314/es/tags/information-retrieval/</link>
+    <description>Recent content in Information Retrieval on Juan Lebrero</description>
+    <generator>Hugo</generator>
+    <language>es</language>
+    <lastBuildDate>Fri, 02 Jan 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1314/es/tags/information-retrieval/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LightRAG: Un Framework Eficiente para la Recuperación Aumentada por Grafos</title>
+      <link>http://localhost:1314/es/posts/light-rag/</link>
+      <pubDate>Fri, 02 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1314/es/posts/light-rag/</guid>
+      <description>&lt;p&gt;La evolución de los sistemas de Generación Aumentada por Recuperación (RAG) ha estado marcada por la necesidad de mejorar la precisión en la recuperación de contexto y la coherencia en la generación de respuestas. Si bien las implementaciones tradicionales de RAG han demostrado eficacia en consultas que requieren recuperación de hechos explícitos, presentan limitaciones estructurales significativas al enfrentarse a preguntas que demandan una síntesis de información distribuida o una comprensión global de un corpus.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

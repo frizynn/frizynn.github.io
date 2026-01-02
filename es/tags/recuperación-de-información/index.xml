@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Recuperación De Información on Juan Lebrero</title>
+    <link>http://localhost:1313/es/tags/recuperaci%C3%B3n-de-informaci%C3%B3n/</link>
+    <description>Recent content in Recuperación De Información on Juan Lebrero</description>
+    <generator>Hugo</generator>
+    <language>es</language>
+    <lastBuildDate>Fri, 02 Jan 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/es/tags/recuperaci%C3%B3n-de-informaci%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LightRAG: Cuando el Grafo se Vuelve Liviano y Poderoso</title>
+      <link>http://localhost:1313/es/posts/light-rag/</link>
+      <pubDate>Fri, 02 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/es/posts/light-rag/</guid>
+      <description>&lt;p&gt;En el &lt;a href=&#34;http://localhost:1313/es/posts/graph-rag/&#34;&gt;post anterior sobre GraphRAG&lt;/a&gt;, analizamos cómo Microsoft Research propuso estructurar la información en grafos de conocimiento para superar las limitaciones del RAG tradicional. El enfoque era potente pero venía con un costo: mantener rutas separadas para consultas &amp;ldquo;locales&amp;rdquo; y &amp;ldquo;globales&amp;rdquo;, y enfrentar reconstrucciones completas del índice cada vez que llegaban datos nuevos. &lt;strong&gt;LightRAG&lt;/strong&gt;, presentado por investigadores de la Universidad de Hong Kong, toma esas ideas y las lleva un paso más allá, proponiendo una arquitectura más liviana, unificada y adaptable.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

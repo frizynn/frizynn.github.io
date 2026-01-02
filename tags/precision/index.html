@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1314&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+
+  <title>
+    
+      Precision
+    
+  </title>
+
+  <link rel="icon" type="image/x-icon" href="http://localhost:1314/favicon.ico" />
+  <link rel="icon" type="image/png" href="http://localhost:1314/favicon.png" />
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.aa8de53cf869dc2c346ad6ccacadb907fc46c96bbaa87554f914c5455dcbec66ef3a7d2846fabbb68aebc2c5ae7319f010c044ef9b620c4f7704290dd991242a.css" integrity="sha512-qo3lPPhp3Cw0atbMrK25B/xGyWu6qHVU&#43;RTFRV3L7GbvOn0oRvq7torrwsWucxnwEMBE75tiDE93BCkN2ZEkKg==" />
+  
+  
+  <link rel="stylesheet" href="/css/custom.css" />
+  
+  
+</head>
+<body a="auto">
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <a href="/" accesskey="h" title="Home">Juan Francisco Lebrero</a>
+            </div>
+            <ul id="menu">
+                <li>
+                    <a href="/" title="Home">
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/about/" title="About">
+                        <span>About</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/posts/" title="Posts">
+                        <span>Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/contact/" title="Contact">
+                        <span>Contact</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="header-controls"><ul class="lang-switch">
+  <li>
+    <a href="/es/" aria-label="Español">ES</a>
+  </li></ul>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  <span class="theme-icon">🌙</span>
+</button>
+
+<script>
+  (function () {
+    'use strict';
+
+    
+    const THEME_KEY = 'theme-preference';
+    const THEMES = {
+      LIGHT: 'light',
+      DARK: 'dark'
+    };
+
+    
+    const ICONS = {
+      [THEMES.LIGHT]: '☀️',
+      [THEMES.DARK]: '🌙'
+    };
+
+    
+    function getCurrentTheme() {
+      return localStorage.getItem(THEME_KEY) || THEMES.LIGHT;
+    }
+
+    
+    function saveTheme(theme) {
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    
+    function applyTheme(theme) {
+      document.body.setAttribute('a', theme);
+    }
+
+    
+    function updateButtonIcon(theme) {
+      const button = document.getElementById('theme-toggle');
+      const icon = button.querySelector('.theme-icon');
+      if (icon) {
+        icon.textContent = ICONS[theme];
+      }
+    }
+
+    
+    function cycleTheme() {
+      const current = getCurrentTheme();
+      let next = current === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT;
+
+      saveTheme(next);
+      applyTheme(next);
+      updateButtonIcon(next);
+    }
+
+    
+    function initTheme() {
+      const theme = getCurrentTheme();
+      applyTheme(theme);
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => updateButtonIcon(theme));
+      } else {
+        updateButtonIcon(theme);
+      }
+    }
+
+    
+    function addToggleListener() {
+      const button = document.getElementById('theme-toggle');
+      if (button) {
+        button.addEventListener('click', cycleTheme);
+      }
+    }
+
+    
+    initTheme();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', addToggleListener);
+    } else {
+      addToggleListener();
+    }
+  })();
+</script></div>
+    <main class="page-content" aria-label="Content">
+        <div class="w"><nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol><li>
+      <a href="http://localhost:1314/">Juan Lebrero</a>
+    </li><li>
+      <a href="http://localhost:1314/tags/">Tags</a>
+    </li><li aria-current="page">Precision</li>
+  </ol>
+</nav>
+<a href="/">..</a>
+
+
+<h1>Precision</h1>
+
+
+
+    <ul><li>
+            <span>2025-09-13</span>
+            <a href="/posts/train-at-scale/">Large-Scale Training: FSDP, QLoRA, and More.</a>
+        </li>
+        
+    </ul>
+
+
+
+        </div>
+    </main>
+</body>
+
+</html>
